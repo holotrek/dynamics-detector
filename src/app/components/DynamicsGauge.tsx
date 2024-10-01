@@ -13,6 +13,9 @@ export default function DynamicsGuage() {
   const { beginListening, dynamicStream } = useDetectDynamics();
   const [value, setValue] = useState(0);
   const [error, setError] = useState<string>();
+  const [lastTimeChanged, setLastTimeChanged] = useState<number>(
+    new Date().getTime()
+  );
 
   useEffect(() => {
     try {
@@ -21,12 +24,16 @@ export default function DynamicsGuage() {
       setError(err.toString());
     }
 
-    const sub = dynamicStream.subscribe(
-      (val) => {
-        setValue(val);
+    const sub = dynamicStream.subscribe({
+      next: (val) => {
+        const time = new Date().getTime();
+        if (Math.abs(val - value) > 3 || time - lastTimeChanged > 1000) {
+          setValue(val);
+          setLastTimeChanged(new Date().getTime());
+        }
       },
-      (err: any) => setError(err.toString())
-    );
+      error: (err: any) => setError(err.toString()),
+    });
     return () => {
       sub.unsubscribe();
     };
@@ -109,7 +116,7 @@ export default function DynamicsGuage() {
       }}
       pointer={{
         elastic: true,
-        animationDelay: 0,
+        animationDelay: 100,
       }}
     />
   );
