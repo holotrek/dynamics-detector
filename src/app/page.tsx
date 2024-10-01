@@ -63,6 +63,19 @@ export default function Home() {
           <span className="font-medium">Embed code copied!</span>
         </div>
       </main>
+      <script
+        defer
+        data-name="BMC-Widget"
+        data-cfasync="false"
+        src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
+        data-id="honeydoodat"
+        data-description="Support me on Buy me a coffee!"
+        data-message="Hey 👋 thanks for visiting! If you like this free site, buy me a coffee!"
+        data-color="#5F7FFF"
+        data-position="Right"
+        data-x_margin="18"
+        data-y_margin="18"
+      />
     </div>
   );
 }
