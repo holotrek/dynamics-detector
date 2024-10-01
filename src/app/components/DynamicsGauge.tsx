@@ -3,7 +3,7 @@
 import dynamic from 'next/dynamic';
 import { defaultTickLabels } from 'react-gauge-component/dist/lib/GaugeComponent/types/Tick';
 import { defaultValueLabel } from 'react-gauge-component/dist/lib/GaugeComponent/types/Labels';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDetectDynamics } from '../../hooks/useDetectDynamics';
 const GaugeComponent = dynamic(() => import("react-gauge-component"), {
   ssr: false,
@@ -13,9 +13,7 @@ export default function DynamicsGuage() {
   const { beginListening, dynamicStream } = useDetectDynamics();
   const [value, setValue] = useState(0);
   const [error, setError] = useState<string>();
-  const [lastTimeChanged, setLastTimeChanged] = useState<number>(
-    new Date().getTime()
-  );
+  const lastTimeChanged = useRef<number>(new Date().getTime());
 
   useEffect(() => {
     try {
@@ -27,9 +25,12 @@ export default function DynamicsGuage() {
     const sub = dynamicStream.subscribe({
       next: (val) => {
         const time = new Date().getTime();
-        if (Math.abs(val - value) > 3 || time - lastTimeChanged > 1000) {
+        if (
+          Math.abs(val - value) > 6 ||
+          time - lastTimeChanged.current > 1000
+        ) {
           setValue(val);
-          setLastTimeChanged(new Date().getTime());
+          lastTimeChanged.current = new Date().getTime();
         }
       },
       error: (err: any) => setError(err.toString()),
@@ -79,7 +80,7 @@ export default function DynamicsGuage() {
       labels={{
         valueLabel: {
           formatTextValue: getDynamic,
-          style: { ..._valLabelBase, ..._musicFontStyle },
+          style: { ..._valLabelBase, ..._musicFontStyle, scale: 2 },
         },
         tickLabels: {
           type: "inner",
