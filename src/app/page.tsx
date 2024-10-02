@@ -4,7 +4,7 @@ import DynamicsGuage from './components/DynamicsGauge';
 import { useState } from 'react';
 
 const embedCode =
-  '<iframe width="300" height="300" allow="microphone" src="https://dynamics-detector.honeydoodat.com/embed"></iframe>';
+  '<iframe width="350" height="375" allow="microphone" src="https://dynamics-detector.honeydoodat.com/embed"></iframe>';
 
 export default function Home() {
   const [codeCopied, setCodeCopied] = useState(false);
